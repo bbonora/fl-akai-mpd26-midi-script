@@ -138,12 +138,12 @@ class MPDHandler(MPD26):
             if pad.number == 15:
                 if self.octave >= 0:
                     self.octave -= 1
-                    ui.setHintMsg('Octave Shift: ' + str(self.octave))
+                    self.output = 'Octave Shift: ' + str(self.octave)
                 event.handled = True
             elif pad.number == 16:
                 if self.octave <= 8:
                     self.octave += 1
-                    ui.setHintMsg('Octave Shift: ' + str(self.octave))
+                    self.output = 'Octave Shift: ' + str(self.octave)
                 event.handled = True
             else:
                 pad_note = self.pads_chromatic_note_map[pad.number]
@@ -273,7 +273,7 @@ class MPDHandler(MPD26):
         # Function Mode
         elif pad.bank == 'd':
             pass
-
+        self.set_hint_message(self.output)
         print("Released pad " + str(pad.number) + ".")
 
 
