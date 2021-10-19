@@ -77,10 +77,10 @@ class MPD26:
     # knobs
     knob_1 = Knob(1, 'knob', 12)
     knob_2 = Knob(2, 'knob', 13)
-    knob_3 = Knob(3, 'knob', 14)
-    knob_4 = Knob(4, 'knob', 15)
-    knob_5 = Knob(5, 'knob', 16)
-    knob_6 = Knob(6, 'knob', 17)
+    # knob_3 = Knob(3, 'knob', 14)
+    # knob_4 = Knob(4, 'knob', 15)
+    # knob_5 = Knob(5, 'knob', 16)
+    # knob_6 = Knob(6, 'knob', 17)
 
     # faders
     slider_1 = Slider(1, 'slider', 20)
@@ -243,10 +243,10 @@ class MPD26:
         self.knobs_by_id = {
             12: self.knob_1,
             13: self.knob_2,
-            14: self.knob_3,
-            15: self.knob_4,
-            16: self.knob_5,
-            17: self.knob_6
+            # 14: self.knob_3,
+            # 15: self.knob_4,
+            # 16: self.knob_5,
+            # 17: self.knob_6
         }
         self.sliders_by_id = {
             20: self.slider_1,

@@ -34,6 +34,7 @@ class MPDHandler(MPD26):
     button_map = 0
     rewind = 0
     fast_forward = 0
+    knob_last_position = 0
     output = ""
     mode_change_unlocked = True
     selected_track = mixer.trackNumber()
@@ -121,7 +122,10 @@ class MPDHandler(MPD26):
         """ Put pad press code here.
         """
         # CHANNEL RACK OMNI MODE
+
         if pad.bank == 'a':
+            ui.showWindow(midi.widChannelRack)
+            ui.setFocused(midi.widChannelRack)
             helpers.channelMidiNoteOn((pad.number - 1), 60, event)
             helpers.channelSelect(pad.number - 1)
             event.handled = True
@@ -169,7 +173,8 @@ class MPDHandler(MPD26):
                 self.output = 'Cut'
             
             elif pad.number == 4:
-
+                print('menu')
+                transport.globalTransport(midi.FPT_ItemMenu,91)
                 # Edison is focused
                 if ui.getFocusedPluginName() == 'Edison':
                     transport.globalTransport(midi.FPT_AddMarker, 33, event.pmeFlags-1)
@@ -273,9 +278,10 @@ class MPDHandler(MPD26):
         # Function Mode
         elif pad.bank == 'd':
             pass
-        self.set_hint_message(self.output)
+        
+        
         print("Released pad " + str(pad.number) + ".")
-
+        self.set_hint_message(self.output)
 
     def handle_pad_pressure_change(self, event, pad, value):
         """ Put pad pressure change code here.
@@ -291,24 +297,29 @@ class MPDHandler(MPD26):
 
         self.selected_channel = channels.selectedChannel()
         # Mixer Focused
-        if(ui.getFocused(midi.widMixer) is 1):
-            if knob.number is not 1:
+        if(ui.getFocused(midi.widMixer) == 1):
+            if knob.number != 1:
                 offset = knob.number - 2
                 trackNum = helpers.getMixerTrackNum()
                 helpers.mixerAdjustPan(trackNum + offset, event.data2)
             else:
                 helpers.mixerAdjustPan(0, event.data2)
+            event.handled = True
         # Everything else
         else:
             if knob.number == 1:
+                ui.showWindow(midi.widChannelRack)
+                ui.setFocused(midi.widChannelRack)
                 helpers.channelAdjustPan(self.selected_channel, event.data2)
 
             elif knob.number == 2:
+                ui.showWindow(midi.widChannelRack)
+                ui.setFocused(midi.widChannelRack)
                 helpers.channelAdjustVolume(self.selected_channel, event.data2)
-        print(event.isIncrement)
+
         print("Changed knob " + str(knob.number) + " to " + str(value) + ".")
 
-        event.handled = True
+        
 
     def handle_slider_change(self, event, slider, value):
         """ Put slider change code here.
@@ -316,7 +327,7 @@ class MPDHandler(MPD26):
         # Sliders 2-6
         ui.showWindow(midi.widMixer)
         ui.setFocused(midi.widMixer)
-        if slider.number is not 1:
+        if slider.number != 1:
             offset = slider.number - 2
             trackNum = helpers.getMixerTrackNum()
             helpers.mixerAdjustFader(trackNum + offset, event.data2)
@@ -334,7 +345,7 @@ class MPDHandler(MPD26):
         """ Put backward press code here.
         """
         # Mixer Mode
-        if ui.getFocused(0) is 1:
+        if ui.getFocused(0) == 1:
             ui.previous()
             self.output = "Mixer: Selected next track: " + helpers.getMixerTrackName(self.selected_track - 1)
            
@@ -359,7 +370,7 @@ class MPDHandler(MPD26):
         """
 
         # Mixer Mode
-        if ui.getFocused(0) is 1:
+        if ui.getFocused(0) == 1:
             ui.next()
             self.output = "Mixer: Selected next track: " + helpers.getMixerTrackName(self.selected_track + 1)
         
@@ -393,7 +404,7 @@ class MPDHandler(MPD26):
         """ Put play press code here.
         """
         transport.start()
-        if transport.isPlaying() is 1: 
+        if transport.isPlaying() == 1: 
             self.output = "Transport: Play"
         else: 
             self.output = "Transport: Paused at " + transport.getSongPosHint()
@@ -406,7 +417,7 @@ class MPDHandler(MPD26):
         """ Put rec press code here.
         """
         # Mixer Mode
-        if ui.getFocused(0) is 1:
+        if ui.getFocused(0) == 1:
             selectedTrack = mixer.trackNumber()
             mixer.armTrack(selectedTrack)
             self.output = "Mixer: Armed track: " + helpers.getMixerTrackName(selectedTrack)
@@ -414,7 +425,7 @@ class MPDHandler(MPD26):
         # Default Mode
         else:
             transport.record()
-            if transport.isRecording() is 1:
+            if transport.isRecording() == 1:
                 self.output = "Transport: Recording Enabled"
             else:
                 self.output = "Transport: Recording Disabled"

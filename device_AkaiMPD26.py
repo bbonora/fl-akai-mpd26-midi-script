@@ -84,10 +84,10 @@ class DeviceInstance(MPDHandler):
         if any([knob.id == id for knob in [
             self.knob_1, 
             self.knob_2, 
-            self.knob_3, 
-            self.knob_4,
-            self.knob_5,
-            self.knob_6
+            # self.knob_3, 
+            # self.knob_4,
+            # self.knob_5,
+            # self.knob_6
         ]]):
             knob = self.get_knob(id)
             self.handle_knob_change(event, knob, event.controlVal)
@@ -149,6 +149,22 @@ class DeviceInstance(MPDHandler):
 
 mpd_device = DeviceInstance()
 
+class NRPN_Message:
+    id = 0
+    id_set = 0
+    value = 0
+
+    def appendId(self, event):
+        
+        self.id =+ (event.data2 << 7)
+
+    def appendValue(self, event):
+        pass
+    
+    def OnNRPN(event):
+        pass
+
+
 
 def OnInit():
     mpd_device.OnInit()
@@ -165,9 +181,22 @@ def OnMidiIn(event):
 def OnMidiOutMsg(event):
     pass
 
-
 def OnMidiMsg(event):
-    mpd_device.OnMidiMsg(event)
+     mpd_device.OnMidiMsg(event)
+
+def OnControlChange(event):
+    if event.data1 == 0x63:
+        print("Non-Registered Parameter Number MSB")
+
+
+    elif event.data1 == 0x62:
+        print("Non-Registered Parameter Number LSB")
+
+
+    elif event.data1 == 0x06:
+        print("IS NRPN: MSB")
+    elif 0x20 <= event.data1 <= 0x3F:
+        print("IS NRPN: LSB")
 
 def OnIdle():
     pass

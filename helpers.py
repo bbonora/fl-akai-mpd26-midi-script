@@ -30,7 +30,7 @@ CHANNEL_PAN_SNAP_TO = 0.0 # Snap channel pans to Centred
 # Gets the selected mixer track
 def getMixerTrackNum():
 	trackNum = mixer.trackNumber()
-	if(trackNum is 0):
+	if(trackNum == 0):
 		trackNum = 1
 		return trackNum
 	else:
@@ -45,13 +45,13 @@ def getMixerTrackName(trackNum):
 # Toggles solo on mixer track
 def mixerToggleSolo(selectedTrackNum):
 	mixer.soloTrack(selectedTrackNum)
-	if mixer.isTrackSolo(selectedTrackNum) is 1: return "Mixer: Solo track: " + getMixerTrackName(selectedTrackNum)
+	if mixer.isTrackSolo(selectedTrackNum) == 1: return "Mixer: Solo track: " + getMixerTrackName(selectedTrackNum)
 	else: return "Mixer: Unsolo track: " + getMixerTrackName(selectedTrackNum)
 
 # Toggles mute on mixer track
 def mixerToggleMute(selectedTrackNum):
 	mixer.muteTrack(selectedTrackNum)
-	if mixer.isTrackMuted(selectedTrackNum) is 1: return "Mixer: Mute track: " + getMixerTrackName(selectedTrackNum)
+	if mixer.isTrackMuted(selectedTrackNum) == 1: return "Mixer: Mute track: " + getMixerTrackName(selectedTrackNum)
 	else: return "Mixer: Unmute track: " + getMixerTrackName(selectedTrackNum)
 
 # Adjusts fader on mixer track
@@ -123,7 +123,7 @@ def channelSelect(channelNum):
 # Toggles solo on channel
 def channelToggleSolo(selectedChannelNum):
 	channels.soloChannel(selectedChannelNum)
-	if(channels.isChannelSolo(selectedChannelNum) is 1): 
+	if(channels.isChannelSolo(selectedChannelNum) == 1): 
 		return "Channel rack: Solo channel: " + getChannelName(selectedChannelNum)
 	else: 
 		return "Channel rack: Unsolo channel: " + getChannelName(selectedChannelNum)
@@ -131,7 +131,7 @@ def channelToggleSolo(selectedChannelNum):
 # Toggles mute on channel
 def channelToggleMute(selectedChannelNum):
 	channels.muteChannel(selectedChannelNum)
-	if(channels.isChannelMuted(selectedChannelNum) is 1): 
+	if(channels.isChannelMuted(selectedChannelNum) == 1): 
 		return "Channel rack: Mute track: " + getChannelName(selectedChannelNum)
 	else: 
 		return "Channel rack: Unmute track: " + getChannelName(selectedChannelNum)
