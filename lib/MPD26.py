@@ -90,11 +90,6 @@ class MPD26:
     slider_5 = Slider(5, 'slider', 24)
     slider_6 = Slider(6, 'slider', 25)
     
-    # switches @todo: remove these
-    switch_1 = Switch(1, 'switch', 28)
-    switch_2 = Switch(2, 'switch', 29)
-    switch_3 = Switch(3, 'switch', 30)
-    switch_4 = Switch(4, 'switch', 31)
 
     #transport controls
     backward = Transport(1, 'transport', 115)
@@ -103,8 +98,6 @@ class MPD26:
     play = Transport(4, 'transport', 118)
     rec = Transport(5, 'transport', 119)
 
-    PAD_BUFFER = 0.1
-    STOP_BUFFER = 2
 
     INPUT_MODES = ['default', 'ui', 'transport']
     MODE_CHANGE_UNLOCK_VALUE = 127
@@ -122,6 +115,15 @@ class MPD26:
             217: 'Channel Aftertouch (Channel)',
             208: 'Channel Aftertouch (Channel)'  # custom preset value
         }
+        
+        self.nrpn = {
+            99: '0x63 - MSB',
+            98: '0x62 - LSB',
+            6: '0x06 - MSB',
+            32: '0x20 - LSB if GT or ET',
+            63: '0x3F - LSB if LT or ET'
+        }
+
         self.pads_by_id = {
             1: self.pad_a_1,
             2: self.pad_a_2,
@@ -256,12 +258,6 @@ class MPD26:
             24: self.slider_5,
             25: self.slider_6
         }
-        self.switches_by_id = {
-            28: self.switch_1,
-            29: self.switch_2,
-            30: self.switch_3,
-            31: self.switch_4
-        }
         self.transports_by_id = {
             115: self.backward,
             116: self.forward,
@@ -287,12 +283,6 @@ class MPD26:
             return self.sliders_by_id[slider_id]
         except KeyError:
             print("self.get_slider error:\n  No slider with id " + str(slider_id) + ".")
-
-    def get_switch(self, switch_id):
-        try:
-            return self.switches_by_id[switch_id]
-        except:
-            print("self.get_switch error:\n  No switch with id " + str(switch_id) + ".")
 
     def get_transport(self, transport_id):
         try:

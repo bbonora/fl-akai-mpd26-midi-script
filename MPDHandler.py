@@ -71,49 +71,6 @@ class MPDHandler(MPD26):
             print("self.setHintMessage error:\n  " +
                   "Param 'message' must be of type str.")
 
-    def check_buffer(self, button, time_pressed):
-        if button.type == 'transport' and self.last_stop_press_time:
-            return time_pressed - self.last_stop_press_time > self.STOP_BUFFER
-        elif button.type == 'pad' and self.last_pad_press_time:
-            return time_pressed - self.last_pad_press_time > self.PAD_BUFFER
-        else:
-            print(button.type.upper() + " " +
-                  str(button.number) + " has no associated buffer.")
-
-    def check_for_mode_change_unlock(self, slider):
-        if all(lock.value == slider.value for lock in [
-            self.slider_1, self.slider_2, self.slider_3, self.slider_4
-        ]):
-            self.mode_change_unlocked = True
-            self.set_hint_message("Button remapping mode")
-            print("Button remapping mode UNLOCKED.")
-
-    def check_for_remap(self, pad, event):
-        """ Change the button mapping if certain conditions are met. """
-        if self.mode_change_unlocked:
-            if self.pad_d_13.held and self.pad_d_16.held:
-                if pad == self.pad_d_1:
-                    self.change_button_mapping(-1)
-                    event.handled = True
-                elif pad == self.pad_d_4:
-                    self.change_button_mapping(1)
-                    event.handled = True
-
-    def change_button_mapping(self, map=1):
-        """ Update the global button mapping mode id. """
-        if isinstance(map, str):
-            if map in self.INPUT_MODES:
-                map = self.INPUT_MODES.index(map)
-        self.button_map = (
-            self.button_map + map
-        ) % len(self.INPUT_MODES)
-        self.set_hint_message(
-            self.INPUT_MODES[self.button_map] + " mode".upper()
-        )
-
-        print("Remapped to " +
-              self.INPUT_MODES[self.button_map].upper() + " mode.")
-
     """
     Input handlers
     """
@@ -290,6 +247,9 @@ class MPDHandler(MPD26):
               " pressure to " + str(value) + ".")
 
         event.handled = True
+    
+    def handle_nrpn_change(self, event, input, value):
+        pass
 
     def handle_knob_change(self, event, knob, value):
         """ Put knob change code here.

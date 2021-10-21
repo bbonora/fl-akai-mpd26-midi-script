@@ -14,6 +14,7 @@ class Knob(Control):
         Control.__init__(self, number, type, id)
         self.is_knob = True
         self.is_slider = False
+        
 
 class Slider(Control):
     def __init__(self, number, type, id):

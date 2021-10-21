@@ -83,11 +83,7 @@ class DeviceInstance(MPDHandler):
         id = event.controlNum
         if any([knob.id == id for knob in [
             self.knob_1, 
-            self.knob_2, 
-            # self.knob_3, 
-            # self.knob_4,
-            # self.knob_5,
-            # self.knob_6
+            self.knob_2
         ]]):
             knob = self.get_knob(id)
             self.handle_knob_change(event, knob, event.controlVal)
@@ -101,20 +97,7 @@ class DeviceInstance(MPDHandler):
         ]]):
             slider = self.get_slider(id)
             slider.value = event.controlVal
-            if slider.value == self.MODE_CHANGE_UNLOCK_VALUE:
-                self.check_for_mode_change_unlock(slider)
-            else:
-                if self.mode_change_unlocked:
-                    self.set_hint_message("Button remapping mode locked")
-                    print("Button remapping mode LOCKED.")
-                self.mode_change_unlocked = False
             self.handle_slider_change(event, slider, event.controlVal)
-        elif any([switch.id == id for switch in [
-            self.switch_1, self.switch_2, self.switch_3, self.switch_4
-        ]]):
-            switch = self.get_switch(id)
-            switch.on = not switch.on
-            self.handle_switch_press(event, switch)
         elif any([transport.id == id for transport in [
             self.backward,
             self.forward,
@@ -125,7 +108,7 @@ class DeviceInstance(MPDHandler):
             self.delegate_transport_press(event, self.get_transport(id))
         else:
             print("Input not found for event.controlNum " + str(id) + ".")
-            event.handled = True
+            event.handled = False
 
     def delegate_transport_press(self, event, transport):
         if transport.number == 1:
@@ -149,34 +132,14 @@ class DeviceInstance(MPDHandler):
 
 mpd_device = DeviceInstance()
 
-class NRPN_Message:
-    id = 0
-    id_set = 0
-    value = 0
-
-    def appendId(self, event):
-        
-        self.id =+ (event.data2 << 7)
-
-    def appendValue(self, event):
-        pass
-    
-    def OnNRPN(event):
-        pass
-
-
-
 def OnInit():
     mpd_device.OnInit()
-
 
 def OnDeInit():
     pass
 
-
 def OnMidiIn(event):
     pass
-
 
 def OnMidiOutMsg(event):
     pass
@@ -185,26 +148,13 @@ def OnMidiMsg(event):
      mpd_device.OnMidiMsg(event)
 
 def OnControlChange(event):
-    if event.data1 == 0x63:
-        print("Non-Registered Parameter Number MSB")
-
-
-    elif event.data1 == 0x62:
-        print("Non-Registered Parameter Number LSB")
-
-
-    elif event.data1 == 0x06:
-        print("IS NRPN: MSB")
-    elif 0x20 <= event.data1 <= 0x3F:
-        print("IS NRPN: LSB")
+    pass
 
 def OnIdle():
     pass
 
-
 def OnRefresh(flags):
     pass
-
 
 def OnUpdateBeatIndicator(value):
     mpd_device.OnUpdateBeatIndicator(value)
